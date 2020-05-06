@@ -1,10 +1,11 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                    "North of you, the cave mount beckons"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -37,7 +38,11 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
+# Clear screen
+print('\x1bc')
+
 # Make a new player object that is currently in the 'outside' room.
+player = Player(input('What is your name? '), room['outside'])
 
 # Write a loop that:
 #
@@ -49,3 +54,19 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+while True:
+    print(player)
+
+    selection = input('Enter "n", "s", "e", "w" to move north, south, east, \
+or west. "q" to quit\n')
+
+    if selection == 'q':
+        print('Thanks for playing')
+        break
+    
+    # Error handling if user tries to go to a non-existent room
+    try:
+        player.location = getattr(player.location, f'{selection}_to')
+    except AttributeError:
+        print("There's nowhere to go in this direction.")
