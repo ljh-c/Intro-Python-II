@@ -1,5 +1,27 @@
 from room import Room
 from player import Player
+from item import Item
+
+# Define all items
+
+item = {
+    'lantern': Item('lantern', 'A rusted lantern, crudely wrought ages ago.'),
+
+    'sword': Item('sword', 'A blunt wooden sword, more a hefty branch than \
+a weapon.'),
+
+    'spear': Item('spear', 'A tarnished grunt spear, long-abandoned by a \
+deserter.'),
+
+    'bread': Item('bread', 'Stale bread that has the texture of a rock, and \
+tastes like one too.'),
+
+    'tonic': Item('tonic', 'An invigorating herbal extract stored in a \
+clouded vial.'),
+
+    'horn': Item('horn', 'A horn carved into the shape of a dragon, covered \
+in worn runes.')
+}
 
 # Declare all the rooms
 
@@ -8,18 +30,18 @@ room = {
                     "North of you, the cave mount beckons"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", [item['lantern']]),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
+the distance, but there is no way across the chasm.""", [item['sword'], item['bread']]),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+to north. The smell of gold permeates the air.""", [item['spear'], item['tonic']]),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+earlier adventurers. The only exit is to the south.""", [item['horn']]),
 }
 
 
@@ -38,11 +60,11 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
-# Clear screen
-print('\x1bc')
-
 # Make a new player object that is currently in the 'outside' room.
 player = Player(input('What is your name? '), room['outside'])
+
+# Clear screen
+print('\x1bc')
 
 # Write a loop that:
 #
@@ -56,10 +78,10 @@ player = Player(input('What is your name? '), room['outside'])
 # If the user enters "q", quit the game.
 
 while True:
-    print(player)
+    print(f"\n\t{player}\n")
 
     selection = input('Enter "n", "s", "e", "w" to move north, south, east, \
-or west. "q" to quit\n')
+or west. "q" to quit\n\n')
 
     if selection == 'q':
         print('Thanks for playing')
