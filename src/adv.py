@@ -77,18 +77,67 @@ print('\x1bc')
 #
 # If the user enters "q", quit the game.
 
+def skip():
+    print('Not a valid command.')
+
 while True:
-    print(f"\n\t{player}\n")
+    print(f"\t{player}")
 
-    selection = input('Enter "n", "s", "e", "w" to move north, south, east, \
-or west. "q" to quit\n\n')
+    command = input('Enter "n", "s", "e", "w" to move north, south, east, \
+or west. "q" or "quit" to quit\n\n')
 
-    if selection == 'q':
+    if command == 'q' or command == 'quit':
         print('Thanks for playing')
         break
     
-    # Error handling if user tries to go to a non-existent room
-    try:
-        player.location = getattr(player.location, f'{selection}_to')
-    except AttributeError:
-        print("There's nowhere to go in this direction.")
+    elif command == 'i':
+        player.print_inventory()
+
+    elif command in ['n', 's', 'e', 'w']:
+        # Error handling if user tries to go to a non-existent room
+        try:
+            player.location = getattr(player.location, f'{command}_to')
+        except AttributeError:
+            print("There's nowhere to go in that direction.")
+
+    elif len(command.split(' ')) > 1:
+        action, item_name = command.split(' ')
+
+        if action == 'get' or action == 'take':
+            if item_name not in item or item[item_name] not in getattr(player.location, 'items'):
+                print("You can't take it with you. Because that item isn't here.")
+            else:
+                picked_up_item = item[item_name]
+                player.location.remove_item(picked_up_item)
+                player.get(picked_up_item)
+                picked_up_item.on_take()
+        
+        if action == 'drop':
+            if item_name not in item or item[item_name] not in getattr(player, 'items'):
+                print("You can't lose what you don't have. Because you're not carrying that item.")
+            else:
+                dropped_item = item[item_name]
+                player.drop(dropped_item)
+                player.location.store_item(dropped_item)
+                dropped_item.on_drop()
+
+    # if len(command.split(' ')) > 1 and (command.split(' ')[0] == 'get' or command.split(' ')[0] == 'take'):
+    #     if command.split(' ')[1] not in item or item[command.split(' ')[1]] not in getattr(player.location, 'items'):
+    #         print("You can't take it with you. Because that item isn't here.")
+    #     else:
+    #         picked_up_item = item[command.split(' ')[1]]
+    #         player.location.remove_item(picked_up_item)
+    #         player.get(picked_up_item)
+    #         picked_up_item.on_take()
+
+    # if len(command.split(' ')) > 1 and command.split(' ')[0] == 'drop':
+    #     if command.split(' ')[1] not in item or item[command.split(' ')[1]] not in getattr(player, 'items'):
+    #         print("You can't lose what you don't have. Because you're not carrying that item.")
+    #     else:
+    #         dropped_item = item[command.split(' ')[1]]
+    #         player.drop(dropped_item)
+    #         player.location.store_item(dropped_item)
+    #         dropped_item.on_drop()
+    
+    else:
+        skip()
